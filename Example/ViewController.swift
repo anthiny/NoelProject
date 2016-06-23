@@ -37,11 +37,11 @@ class ViewController: UIViewController {
         do{
             try generatingQRcode()
         }catch InputError.noName{
-            print("No Name")
+            showAlert("Your name space is empty")
         }catch InputError.OutOfRange{
-            print("OutOfRange")
+            showAlert("PhoneNumber's length is Out Of Range")
         }catch {
-            print("Exceptional Error!")
+            showAlert("Exceptional Error!")
         }
     }
     
@@ -51,14 +51,24 @@ class ViewController: UIViewController {
             throw InputError.noName
         }
         
-        guard phoneNumberTextField.text?.characters.count < 11 else {
+        guard phoneNumberTextField.text?.characters.count < 12 else {
             throw InputError.OutOfRange
         }
        
         let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: nil)
         var qrCodeContents = QRCode(Info.exchangeToQRString())
-        qrCodeContents!.backgroundColor = CIColor(rgba: "000")
+        qrCodeContents?.color = CIColor(color: UIColor.blueColor())
         qrImage.image=qrCodeContents?.image
+    }
+    
+    func showAlert(title: String, message: String? = nil){
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        
+        alertController.addAction(okAction)
+        
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     
