@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		922B2A551D1D039B002D926A /* PersonInfo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A531D1D039B002D926A /* PersonInfo.xcdatamodeld */; };
+		922B2A571D1D0723002D926A /* FirstViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A561D1D0723002D926A /* FirstViewContoller.swift */; };
+		922B2A591D1D1C3D002D926A /* AddViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A581D1D1C3D002D926A /* AddViewContoller.swift */; };
 		925941CE1D1ABB0F0083BFE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925941CD1D1ABB0F0083BFE6 /* AppDelegate.swift */; };
 		925941D01D1ABB0F0083BFE6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925941CF1D1ABB0F0083BFE6 /* ViewController.swift */; };
 		925941D31D1ABB0F0083BFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925941D11D1ABB0F0083BFE6 /* Main.storyboard */; };
@@ -19,6 +22,9 @@
 /* Begin PBXFileReference section */
 		40D65BEB8B4311BBA59CE9AD /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		6995C908F78DF480DA894F85 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		922B2A541D1D039B002D926A /* PersonInfo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PersonInfo.xcdatamodel; sourceTree = "<group>"; };
+		922B2A561D1D0723002D926A /* FirstViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewContoller.swift; sourceTree = "<group>"; };
+		922B2A581D1D1C3D002D926A /* AddViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddViewContoller.swift; sourceTree = "<group>"; };
 		925941CA1D1ABB0F0083BFE6 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		925941CD1D1ABB0F0083BFE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		925941CF1D1ABB0F0083BFE6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -89,6 +95,9 @@
 				925941D61D1ABB0F0083BFE6 /* LaunchScreen.storyboard */,
 				925941D91D1ABB0F0083BFE6 /* Info.plist */,
 				925941E01D1AD1C10083BFE6 /* InfoModel.swift */,
+				922B2A531D1D039B002D926A /* PersonInfo.xcdatamodeld */,
+				922B2A561D1D0723002D926A /* FirstViewContoller.swift */,
+				922B2A581D1D1C3D002D926A /* AddViewContoller.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -217,7 +226,10 @@
 			files = (
 				925941D01D1ABB0F0083BFE6 /* ViewController.swift in Sources */,
 				925941CE1D1ABB0F0083BFE6 /* AppDelegate.swift in Sources */,
+				922B2A551D1D039B002D926A /* PersonInfo.xcdatamodeld in Sources */,
 				925941E11D1AD1C10083BFE6 /* InfoModel.swift in Sources */,
+				922B2A571D1D0723002D926A /* FirstViewContoller.swift in Sources */,
+				922B2A591D1D1C3D002D926A /* AddViewContoller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +384,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		922B2A531D1D039B002D926A /* PersonInfo.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				922B2A541D1D039B002D926A /* PersonInfo.xcdatamodel */,
+			);
+			currentVersion = 922B2A541D1D039B002D926A /* PersonInfo.xcdatamodel */;
+			path = PersonInfo.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 925941C21D1ABB0F0083BFE6 /* Project object */;
 }
