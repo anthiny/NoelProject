@@ -97,6 +97,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         let row = self.persons[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         cell.textLabel?.text = row.valueForKey("name") as? String
+        cell.detailTextLabel?.text = row.valueForKey("phoneNumber") as? String
         return cell
     }
     
@@ -128,10 +129,10 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
         
         person.setValue(info.name, forKey: "name")
-        person.setValue(Int(info.phoneNumber!), forKey: "phoneNumber")
+        person.setValue(info.phoneNumber, forKey: "phoneNumber")
         person.setValue(info.companyName, forKey: "companyName")
         person.setValue(info.email, forKey: "email")
-        
+        print(person.valueForKey("phoneNumber"))
         do{
             try managedContext.save()
             let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(info.name)'s Info", preferredStyle: .Alert)

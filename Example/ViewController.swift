@@ -10,14 +10,18 @@ import UIKit
 import QRCode
 import SnapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
     
     var qrImage = UIImageView()
     var inputContentsView = UIView()
     var nameTextField = UITextField()
+    var nameLabel = UILabel()
     var phoneNumberTextField = UITextField()
+    var phoneNumberLabel = UILabel()
     var companyNameTextField = UITextField()
+    var companyNameLabel = UILabel()
     var emailTextField = UITextField()
+    var emailLabel = UILabel()
     var generatingButton = UIButton()
     
     enum InputError: ErrorType{
@@ -31,7 +35,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setContentsConstrant()
-        //generatingButton.al
+        nameTextField.delegate = self
+        phoneNumberTextField.delegate = self
+        companyNameTextField.delegate = self
+        emailTextField.delegate = self
         // Do any additional setup after loading the view, typically from a nib.
         
     }
@@ -47,17 +54,25 @@ class ViewController: UIViewController {
         superView.addSubview(qrImage)
         superView.addSubview(inputContentsView)
         inputContentsView.addSubview(nameTextField)
+        inputContentsView.addSubview(nameLabel)
         inputContentsView.addSubview(phoneNumberTextField)
+        inputContentsView.addSubview(phoneNumberLabel)
         inputContentsView.addSubview(companyNameTextField)
+        inputContentsView.addSubview(companyNameLabel)
         inputContentsView.addSubview(emailTextField)
+        inputContentsView.addSubview(emailLabel)
         superView.addSubview(generatingButton)
         
         qrImage.translatesAutoresizingMaskIntoConstraints = false
         inputContentsView.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
         phoneNumberTextField.translatesAutoresizingMaskIntoConstraints = false
+        phoneNumberLabel.translatesAutoresizingMaskIntoConstraints = false
         companyNameTextField.translatesAutoresizingMaskIntoConstraints = false
+        companyNameLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
         generatingButton.translatesAutoresizingMaskIntoConstraints = false
         
         qrImage.backgroundColor = UIColor.whiteColor()
@@ -76,31 +91,63 @@ class ViewController: UIViewController {
             make.centerX.equalTo(superView.snp_centerX)
         }
         
+        nameLabel.text = "Name"
+        nameLabel.snp_makeConstraints { (make) in
+            make.top.equalTo(inputContentsView.snp_top).offset(5)
+            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.width.equalTo(80)
+            make.height.equalTo(phoneNumberLabel.snp_height)
+        }
+        
         nameTextField.borderStyle = .RoundedRect
         nameTextField.backgroundColor = UIColor.clearColor()
         nameTextField.snp_makeConstraints { (make) in
             make.top.equalTo(inputContentsView.snp_top).offset(5)
-            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.leading.equalTo(nameLabel.snp_trailing).offset(10)
             make.trailing.equalTo(inputContentsView.snp_trailing).offset(-3)
             make.height.equalTo(phoneNumberTextField.snp_height)
+        }
+        
+        phoneNumberLabel.text = "Phone"
+        phoneNumberLabel.snp_makeConstraints { (make) in
+            make.top.equalTo(nameLabel.snp_bottom).offset(6)
+            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.width.equalTo(nameLabel.snp_width)
+            make.height.equalTo(companyNameLabel.snp_height)
         }
         
         phoneNumberTextField.borderStyle = .RoundedRect
         phoneNumberTextField.backgroundColor = UIColor.clearColor()
         phoneNumberTextField.snp_makeConstraints { (make) in
             make.top.equalTo(nameTextField.snp_bottom).offset(3)
-            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.leading.equalTo(phoneNumberLabel.snp_trailing).offset(10)
             make.trailing.equalTo(inputContentsView.snp_trailing).offset(-3)
             make.height.equalTo(companyNameTextField.snp_height)
+        }
+        
+        companyNameLabel.text = "Company"
+        companyNameLabel.snp_makeConstraints { (make) in
+            make.top.equalTo(phoneNumberLabel.snp_bottom).offset(6)
+            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.width.equalTo(phoneNumberLabel.snp_width)
+            make.height.equalTo(emailLabel.snp_height)
         }
         
         companyNameTextField.borderStyle = .RoundedRect
         companyNameTextField.backgroundColor = UIColor.clearColor()
         companyNameTextField.snp_makeConstraints { (make) in
             make.top.equalTo(phoneNumberTextField.snp_bottom).offset(3)
-            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.leading.equalTo(companyNameLabel.snp_trailing).offset(10)
             make.trailing.equalTo(inputContentsView.snp_trailing).offset(-3)
             make.height.equalTo(emailTextField.snp_height)
+        }
+        
+        emailLabel.text = "Email"
+        emailLabel.snp_makeConstraints { (make) in
+            make.top.equalTo(companyNameLabel.snp_bottom).offset(6)
+            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.width.equalTo(companyNameLabel.snp_width)
+            make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
         
         emailTextField.borderStyle = .RoundedRect
@@ -108,7 +155,7 @@ class ViewController: UIViewController {
         emailTextField.keyboardType = .EmailAddress
         emailTextField.snp_makeConstraints { (make) in
             make.top.equalTo(companyNameTextField.snp_bottom).offset(3)
-            make.leading.equalTo(inputContentsView.snp_leading).offset(10)
+            make.leading.equalTo(emailLabel.snp_trailing).offset(10)
             make.trailing.equalTo(inputContentsView.snp_trailing).offset(-3)
             make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
@@ -121,6 +168,16 @@ class ViewController: UIViewController {
             make.centerX.equalTo(superView.snp_centerX)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        view.endEditing(true)
+        super.touchesBegan(touches, withEvent: event)
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
     }
 
     func generatingQRCode(button: UIButton) {
@@ -166,7 +223,7 @@ class ViewController: UIViewController {
             throw InputError.OutOfRange
         }
         
-        let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: nil)
+        let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: emailTextField.text!)
         var qrCodeContents = QRCode(Info.exchangeToQRString())
         qrCodeContents?.color = CIColor(color: UIColor.blueColor())
         qrImage.image=qrCodeContents?.image
