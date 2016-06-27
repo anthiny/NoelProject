@@ -55,6 +55,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             print("Could not save \(error), \(error.userInfo)")
         }
     }
+    
     //CoreData Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -73,6 +74,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         }
     }
     
+    //Open QRCodeScan View
     @IBAction func openAddView(sender: AnyObject)
     {
         if QRCodeReader.isAvailable() && QRCodeReader.supportsMetadataObjectTypes() {
