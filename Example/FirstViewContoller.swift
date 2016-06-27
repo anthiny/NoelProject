@@ -15,7 +15,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     
     var persons = [NSManagedObject]()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
+
     lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "취소", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
     
     override func viewDidLoad() {
@@ -29,12 +29,11 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     override func viewWillAppear(animated: Bool) {
-        
         coreDataFetch()
-        
         self.tableView.reloadData()
     }
     
+    //CoreData Loading
     func coreDataFetch() {
         
         let fetchRequest = NSFetchRequest(entityName: "Info")
@@ -47,6 +46,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         }
     }
     
+    //CoreData Saving
     func coreDataSave() {
         
         do{
@@ -55,7 +55,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             print("Could not save \(error), \(error.userInfo)")
         }
     }
-    
+    //CoreData Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.Delete {
@@ -77,7 +77,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     {
         if QRCodeReader.isAvailable() && QRCodeReader.supportsMetadataObjectTypes() {
             readerVC.delegate = self
-            
             readerVC.modalPresentationStyle = .FormSheet
             presentViewController(readerVC, animated: true, completion: nil)
         }
@@ -100,24 +99,23 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     func reader(reader: QRCodeReaderViewController, didScanResult result: QRCodeReaderResult) {
-        self.dismissViewControllerAnimated(true, completion:
-            { [unowned self] () -> Void in
-                let resultStrings = result.value.componentsSeparatedByString("$")
-                if resultStrings.count != 4 {
-                    print("Information's Index is not Enough!")
-                }
-                else{
-                    let info = ContactInfo(name: resultStrings[0], phoneNumber: resultStrings[1], companyName: resultStrings[2], email: resultStrings[3])
-                    self.saveInfo(info)
-                }
-            })
+        let resultStrings = result.value.componentsSeparatedByString("$")
+        if resultStrings.count != 4 {
+            let alert = UIAlertController(title: "QRCodeReader Error", message: "Information's Index is not Match!", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
+            reader.presentViewController(alert, animated: true, completion: nil)
+        }
+        else{
+            let info = ContactInfo(name: resultStrings[0], phoneNumber: resultStrings[1], companyName: resultStrings[2], email: resultStrings[3])
+            self.saveInfo(info, reader: reader)
+        }
     }
     
     func readerDidCancel(reader: QRCodeReaderViewController) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func saveInfo(info: ContactInfo){
+    func saveInfo(info: ContactInfo, reader: QRCodeReaderViewController) {
         
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
@@ -134,13 +132,13 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         
         do{
             try managedContext.save()
-            let alert = UIAlertController(title: "QRCodeReader", message: "Success Add New Info", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alert, animated: true, completion: {self.tableView.reloadData()})
+            let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(info.name)'s Info", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
+            reader.presentViewController(alert, animated: true, completion: nil)
         } catch let error as NSError{
-            let alert = UIAlertController(title: "QRCodeReader Error", message: String(error.code), preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: "QRCodeReader Error", message: "Error code: \(error.code)", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
+            reader.presentViewController(alert, animated: true, completion: nil)
         }
     }
 
