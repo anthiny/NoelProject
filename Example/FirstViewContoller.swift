@@ -103,21 +103,45 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         self.dismissViewControllerAnimated(true, completion:
             { [unowned self] () -> Void in
                 let resultStrings = result.value.componentsSeparatedByString("$")
-                if resultStrings.count < 4 {
-                    print("Indext is not Enough!")
+                if resultStrings.count != 4 {
+                    print("Information's Index is not Enough!")
                 }
                 else{
-                    let resultMessage = "name: \(resultStrings[0]) \n PhoneNumber: \(resultStrings[1]) \n CompanyName: \(resultStrings[2]) \n Email: \(resultStrings[3])"
-                    let alert = UIAlertController(title: "QRCodeReader", message: resultMessage, preferredStyle: .Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-                
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    let info = ContactInfo(name: resultStrings[0], phoneNumber: resultStrings[1], companyName: resultStrings[2], email: resultStrings[3])
+                    self.saveInfo(info)
                 }
             })
     }
     
     func readerDidCancel(reader: QRCodeReaderViewController) {
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func saveInfo(info: ContactInfo){
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        let managedContext = appDelegate.managedObjectContext
+        
+        let entity = NSEntityDescription.entityForName("Info", inManagedObjectContext: managedContext)
+        
+        let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        person.setValue(info.name, forKey: "name")
+        person.setValue(Int(info.phoneNumber!), forKey: "phoneNumber")
+        person.setValue(info.companyName, forKey: "companyName")
+        person.setValue(info.email, forKey: "email")
+        
+        do{
+            try managedContext.save()
+            let alert = UIAlertController(title: "QRCodeReader", message: "Success Add New Info", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alert, animated: true, completion: {self.tableView.reloadData()})
+        } catch let error as NSError{
+            let alert = UIAlertController(title: "QRCodeReader Error", message: String(error.code), preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
     }
 
 }

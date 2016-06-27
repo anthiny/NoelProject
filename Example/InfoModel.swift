@@ -15,7 +15,7 @@ class ContactInfo {
     }
     
     func exchangeToQRString() -> String{
-        let QRString = "name$\(name)#phone$\(phoneNumber)#company$\(companyName)#email$\(email)#"
+        let QRString = "\(name)$\(phoneNumber)$\(companyName)$\(email)"
         return QRString
     }
 }
