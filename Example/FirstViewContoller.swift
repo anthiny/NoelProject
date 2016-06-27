@@ -9,11 +9,14 @@
 import Foundation
 import CoreData
 import UIKit
+import QRCodeReader
 
-class FirstViewController: UITableViewController {
+class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate {
     
     var persons = [NSManagedObject]()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "취소", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +73,20 @@ class FirstViewController: UITableViewController {
         }
     }
     
+    @IBAction func openAddView(sender: AnyObject)
+    {
+        if QRCodeReader.isAvailable() && QRCodeReader.supportsMetadataObjectTypes() {
+            readerVC.delegate = self
+            
+            readerVC.modalPresentationStyle = .FormSheet
+            presentViewController(readerVC, animated: true, completion: nil)
+        }
+        else{
+            let alert = UIAlertController(title: "Error !", message: "You can't use QRCodeReader. \n Check Your Device!", preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+            presentViewController(alert, animated: true, completion: nil)
+        }
+    }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return persons.count
@@ -80,6 +97,27 @@ class FirstViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         cell.textLabel?.text = row.valueForKey("name") as? String
         return cell
+    }
+    
+    func reader(reader: QRCodeReaderViewController, didScanResult result: QRCodeReaderResult) {
+        self.dismissViewControllerAnimated(true, completion:
+            { [unowned self] () -> Void in
+                let resultStrings = result.value.componentsSeparatedByString("$")
+                if resultStrings.count < 4 {
+                    print("Indext is not Enough!")
+                }
+                else{
+                    let resultMessage = "name: \(resultStrings[0]) \n PhoneNumber: \(resultStrings[1]) \n CompanyName: \(resultStrings[2]) \n Email: \(resultStrings[3])"
+                    let alert = UIAlertController(title: "QRCodeReader", message: resultMessage, preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+            })
+    }
+    
+    func readerDidCancel(reader: QRCodeReaderViewController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 
 }

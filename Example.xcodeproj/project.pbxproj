@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		922B2A551D1D039B002D926A /* PersonInfo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A531D1D039B002D926A /* PersonInfo.xcdatamodeld */; };
 		922B2A571D1D0723002D926A /* FirstViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A561D1D0723002D926A /* FirstViewContoller.swift */; };
-		922B2A591D1D1C3D002D926A /* AddViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922B2A581D1D1C3D002D926A /* AddViewContoller.swift */; };
 		925941CE1D1ABB0F0083BFE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925941CD1D1ABB0F0083BFE6 /* AppDelegate.swift */; };
 		925941D01D1ABB0F0083BFE6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925941CF1D1ABB0F0083BFE6 /* ViewController.swift */; };
 		925941D31D1ABB0F0083BFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925941D11D1ABB0F0083BFE6 /* Main.storyboard */; };
@@ -24,7 +23,6 @@
 		6995C908F78DF480DA894F85 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		922B2A541D1D039B002D926A /* PersonInfo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PersonInfo.xcdatamodel; sourceTree = "<group>"; };
 		922B2A561D1D0723002D926A /* FirstViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewContoller.swift; sourceTree = "<group>"; };
-		922B2A581D1D1C3D002D926A /* AddViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddViewContoller.swift; sourceTree = "<group>"; };
 		925941CA1D1ABB0F0083BFE6 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		925941CD1D1ABB0F0083BFE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		925941CF1D1ABB0F0083BFE6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -97,7 +95,6 @@
 				925941E01D1AD1C10083BFE6 /* InfoModel.swift */,
 				922B2A531D1D039B002D926A /* PersonInfo.xcdatamodeld */,
 				922B2A561D1D0723002D926A /* FirstViewContoller.swift */,
-				922B2A581D1D1C3D002D926A /* AddViewContoller.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -137,6 +134,7 @@
 				TargetAttributes = {
 					925941C91D1ABB0F0083BFE6 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 42V5HDSHWE;
 					};
 				};
 			};
@@ -229,7 +227,6 @@
 				922B2A551D1D039B002D926A /* PersonInfo.xcdatamodeld in Sources */,
 				925941E11D1AD1C10083BFE6 /* InfoModel.swift in Sources */,
 				922B2A571D1D0723002D926A /* FirstViewContoller.swift in Sources */,
-				922B2A591D1D1C3D002D926A /* AddViewContoller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,10 +340,13 @@
 			baseConfigurationReference = 40D65BEB8B4311BBA59CE9AD /* Pods-Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.noel.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -355,10 +355,13 @@
 			baseConfigurationReference = A058ACB18762D0E00112D030 /* Pods-Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.noel.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

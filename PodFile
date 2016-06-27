@@ -1,4 +1,8 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
 target "Example" do
     pod "QRCode", "~> 0.5"
     use_frameworks!
+    pod 'QRCodeReader.swift', '~> 6.0.0'
+    pod 'SnapKit', '~> 0.15.0'
 end
