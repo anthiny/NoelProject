@@ -126,6 +126,20 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         return cell
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("showDetail", sender: indexPath)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if segue.identifier == "showDetail" {
+            if let destinationVC = segue.destinationViewController as? DetailViewController{
+                let selectedRow = (sender as? NSIndexPath)?.row
+                let aa = persons[selectedRow!].valueForKey("name")
+                destinationVC.text = aa as? String
+            }
+        }
+    }
+    
     func reader(reader: QRCodeReaderViewController, didScanResult result: QRCodeReaderResult) {
         let resultStrings = result.value.componentsSeparatedByString("$")
         if resultStrings.count != 4 {
