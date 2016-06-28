@@ -11,17 +11,29 @@ import CoreData
 import UIKit
 import QRCodeReader
 
-class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate {
+class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate, UISearchResultsUpdating {
     
     var persons = [NSManagedObject]()
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-
-    lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "취소", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate    
+    lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "Cancel", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
+    let searchController = UISearchController(searchResultsController: nil)
+    var filteredPersons = [NSManagedObject]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = editButtonItem()
-
+        searchController.searchResultsUpdater = self
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        self.tableView.tableHeaderView = searchController.searchBar
+    }
+    
+    func filterContentForSearchText(searchText: String, scope: String = "All") {
+        filteredPersons = persons.filter { person in
+            return (person.valueForKey("name")?.lowercaseString.containsString(searchText.lowercaseString))!
+        }
+        tableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -31,6 +43,10 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     override func viewWillAppear(animated: Bool) {
         coreDataFetch()
         self.tableView.reloadData()
+    }
+    
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
     }
     
     //CoreData Loading
@@ -90,14 +106,23 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if searchController.active && searchController.searchBar.text != "" {
+            return filteredPersons.count
+        }
         return persons.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let row = self.persons[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
-        cell.textLabel?.text = row.valueForKey("name") as? String
-        cell.detailTextLabel?.text = row.valueForKey("phoneNumber") as? String
+        let person: NSManagedObject
+        if searchController.active && searchController.searchBar.text != "" {
+            person = filteredPersons[indexPath.row]
+        } else {
+            person = persons[indexPath.row]
+        }
+        cell.textLabel?.text = person.valueForKey("name") as? String
+        cell.detailTextLabel?.text = person.valueForKey("phoneNumber") as? String
         return cell
     }
     
