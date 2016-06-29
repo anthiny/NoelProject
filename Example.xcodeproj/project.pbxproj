@@ -15,7 +15,7 @@
 		925941D51D1ABB0F0083BFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 925941D41D1ABB0F0083BFE6 /* Assets.xcassets */; };
 		925941D81D1ABB0F0083BFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 925941D61D1ABB0F0083BFE6 /* LaunchScreen.storyboard */; };
 		925941E11D1AD1C10083BFE6 /* InfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 925941E01D1AD1C10083BFE6 /* InfoModel.swift */; };
-		928897551D227D1700525F78 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 928897541D227D1700525F78 /* DetailViewController.swift */; };
+		926F8A6B1D23A72300AD7D61 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926F8A6A1D23A72300AD7D61 /* DetailViewController.swift */; };
 		A7D9647CF5A69609777D2276 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6995C908F78DF480DA894F85 /* Pods_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +34,7 @@
 		925941D91D1ABB0F0083BFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		925941DF1D1ABB520083BFE6 /* PodFile */ = {isa = PBXFileReference; lastKnownFileType = text; path = PodFile; sourceTree = "<group>"; };
 		925941E01D1AD1C10083BFE6 /* InfoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoModel.swift; sourceTree = "<group>"; };
-		928897541D227D1700525F78 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailViewController.swift; path = ../DetailViewController.swift; sourceTree = "<group>"; };
+		926F8A6A1D23A72300AD7D61 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		A058ACB18762D0E00112D030 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,7 +89,7 @@
 		925941CC1D1ABB0F0083BFE6 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				928897541D227D1700525F78 /* DetailViewController.swift */,
+				926F8A6A1D23A72300AD7D61 /* DetailViewController.swift */,
 				925941CD1D1ABB0F0083BFE6 /* AppDelegate.swift */,
 				925941CF1D1ABB0F0083BFE6 /* ViewController.swift */,
 				925941D11D1ABB0F0083BFE6 /* Main.storyboard */,
@@ -229,7 +229,7 @@
 				925941D01D1ABB0F0083BFE6 /* ViewController.swift in Sources */,
 				925941CE1D1ABB0F0083BFE6 /* AppDelegate.swift in Sources */,
 				925941E11D1AD1C10083BFE6 /* InfoModel.swift in Sources */,
-				928897551D227D1700525F78 /* DetailViewController.swift in Sources */,
+				926F8A6B1D23A72300AD7D61 /* DetailViewController.swift in Sources */,
 				9226FB5F1D2131D800B05CF8 /* PersonInfo.xcdatamodeld in Sources */,
 				922B2A571D1D0723002D926A /* FirstViewContoller.swift in Sources */,
 			);
