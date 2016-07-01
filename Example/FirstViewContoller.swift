@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import QRCodeReader
+import Alamofire
 
 class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate, UISearchResultsUpdating {
 
@@ -18,9 +19,42 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     let searchController = UISearchController(searchResultsController: nil)
     var filteredPersons = [ContactInfo]()
     
+    let userID = UIDevice.currentDevice().identifierForVendor!.UUIDString
+    let divid = 100000000
+    
+    //getAPi
+    func getAPI(){
+        let hashedUserID = userID.hashValue%divid
+        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)"
+        print(requestURL)
+        Alamofire.request(.GET, requestURL, parameters: nil)
+            .responseJSON { response in
+                print("get-\(response.result)")   // result of response serialization
+                if let JSON = response.result.value {
+                    print(JSON)
+                }
+                else{
+                    let alert = UIAlertController(title: "Error !", message: "You can't access to server. \n Check Your Internet", preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(UIAlertAction) in exit(0)}))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+        }
+    }
+    
+    func convertResponseData(responseData: AnyObject) {
+        
+        if let infoDict = responseData["info"] as? [AnyObject] {
+            for dict2 in infoDict{
+                let newPerson = ContactInfo(name: dict2["name"] as! String, phoneNumber: dict2["phoneNumber"] as! String, companyName: dict2["companyName"] as! String, email: dict2["email"] as! String)
+                persons.append(newPerson)
+            }
+            self.tableView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getAPI()
         navigationItem.leftBarButtonItem = editButtonItem()
         saveDummy()
         //Add searchBar
@@ -78,7 +112,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             presentViewController(alert, animated: true, completion: nil)
         }
     }
-    
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -106,12 +139,12 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier("showDetail", sender: indexPath)
     }
-    
+      
     //Perpare Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showDetail" {
             if let destinationVC = segue.destinationViewController as? DetailViewController{
-                searchController.active = false
+
                 let selectedRow = (sender as? NSIndexPath)?.row
                 
                 if let name = persons[selectedRow!].name as? String{
