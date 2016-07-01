@@ -32,6 +32,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                 print("get-\(response.result)")   // result of response serialization
                 if let JSON = response.result.value {
                     print(JSON)
+                    self.convertResponseData(JSON)
                 }
                 else{
                     let alert = UIAlertController(title: "Error !", message: "You can't access to server. \n Check Your Internet", preferredStyle: .Alert)
@@ -45,10 +46,43 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         
         if let infoDict = responseData["info"] as? [AnyObject] {
             for dict2 in infoDict{
-                let newPerson = ContactInfo(name: dict2["name"] as! String, phoneNumber: dict2["phoneNumber"] as! String, companyName: dict2["companyName"] as! String, email: dict2["email"] as! String)
+                let name = dict2["name"] as? String
+                let phoneNumber = dict2["phone"] as? String
+                let companyName = dict2["companyName"] as? String
+                let email = dict2["email"] as? String
+                let newPerson = ContactInfo(name: name!, phoneNumber: phoneNumber!, companyName: companyName!, email: email!)
                 persons.append(newPerson)
             }
             self.tableView.reloadData()
+        }
+    }
+    
+    //Add API
+    func addAPI(target: ContactInfo, reader: QRCodeReaderViewController){
+        let hashedUserID = userID.hashValue%divid
+        let targetPhone = target.phoneNumber
+        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)/info/\(targetPhone)"
+        let parameters = [
+            "name": target.name,
+            "phone": target.phoneNumber,
+            "companyName": target.companyName,
+            "email": target.email
+        ]
+        Alamofire.request(.POST, requestURL, parameters: parameters, encoding: .JSON)
+            .responseJSON { response in
+                print("add-\(response.result)")   // result of response serialization
+                if let JSON = response.result.value {
+                    let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(target.name)'s Info", preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in
+                        self.persons.append(target)
+                        self.dismissViewControllerAnimated(true, completion: nil)}))
+                    reader.presentViewController(alert, animated: true, completion: nil)
+                }
+                else{
+                    let alert = UIAlertController(title: "Failed Add New Item to Serever", message: "Check your Internet!", preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
+                    reader.presentViewController(alert, animated: true, completion: nil)
+                }
         }
     }
     
@@ -56,7 +90,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         super.viewDidLoad()
         getAPI()
         navigationItem.leftBarButtonItem = editButtonItem()
-        saveDummy()
+        //saveDummy()
         //Add searchBar
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
@@ -139,7 +173,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         performSegueWithIdentifier("showDetail", sender: indexPath)
     }
-      
+    
     //Perpare Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showDetail" {
@@ -184,7 +218,14 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         }
         else{
             let info = ContactInfo(name: resultStrings[0], phoneNumber: resultStrings[1], companyName: resultStrings[2], email: resultStrings[3])
-            self.saveInfo(info, reader: reader)
+            if checkDuplication(info.phoneNumber, email: info.email){
+                let alert = UIAlertController(title: "Failed Add New Item", message: "Same PhoneNumber or Same Email already exist", preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
+                reader.presentViewController(alert, animated: true, completion: nil)
+            }
+            else{
+                self.addAPI(info, reader: reader)
+            }
         }
     }
     
@@ -208,23 +249,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             }
         }
         return false
-    }
-    
-    
-    //save to coredata
-    func saveInfo(info: ContactInfo, reader: QRCodeReaderViewController) {
-        if !checkDuplication(info.phoneNumber, email: info.email){
-            persons.append(info)
-            let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(info.name)'s Info", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
-            reader.presentViewController(alert, animated: true, completion: nil)
-        }
-        else{
-            let alert = UIAlertController(title: "Failed Add New Item", message: "Same PhoneNumber or Same Email already exist", preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
-            reader.presentViewController(alert, animated: true, completion: nil)
-        }
-        
     }
 
 }
