@@ -86,6 +86,28 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         }
     }
     
+    //DeleteAPI
+    func deleteAPI(target: ContactInfo, indexPath: NSIndexPath){
+        let hashedUserID = userID.hashValue%divid
+        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)/info/\(target.phoneNumber)"
+        
+        Alamofire.request(.DELETE, requestURL, parameters: nil)
+            .responseJSON { response in
+                print("delete-\(response.result)")   // result of response serialization
+                
+                if let JSON = response.result.value {
+                    let alert = UIAlertController(title: "Success Delete Item!", message: "\(target.name) Item is deleted", preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(UIAlertAction) in
+                        self.persons.removeAtIndex(indexPath.row)
+                        self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                    }))
+                    self.presentViewController(alert, animated: true, completion: nil)
+                }
+               
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         getAPI()
@@ -125,10 +147,8 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         
         if editingStyle == UITableViewCellEditingStyle.Delete {
             
-            persons.removeAtIndex(indexPath.row)
-            
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-            
+            let target = persons[indexPath.row]
+            deleteAPI(target, indexPath: indexPath)
         }
     }
     
