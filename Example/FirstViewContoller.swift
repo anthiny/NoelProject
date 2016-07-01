@@ -7,17 +7,16 @@
 //
 
 import Foundation
-import CoreData
 import UIKit
 import QRCodeReader
 
 class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate, UISearchResultsUpdating {
-    
-    var persons = [NSManagedObject]()
+
+    var persons = [ContactInfo]()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate    
     lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "Cancel", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
     let searchController = UISearchController(searchResultsController: nil)
-    var filteredPersons = [NSManagedObject]()
+    var filteredPersons = [ContactInfo]()
     
     
     override func viewDidLoad() {
@@ -35,7 +34,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     //SearchBar Filter
     func filterContentForSearchText(searchText: String, scope: String = "All") {
         filteredPersons = persons.filter { person in
-            return (person.valueForKey("name")?.lowercaseString.containsString(searchText.lowercaseString))!
+            return (person.name.lowercaseString.containsString(searchText.lowercaseString))
         }
         tableView.reloadData()
     }
@@ -45,7 +44,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     override func viewWillAppear(animated: Bool) {
-        coreDataFetch()
         self.tableView.reloadData()
     }
     
@@ -54,41 +52,12 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         filterContentForSearchText(searchController.searchBar.text!)
     }
     
-    //CoreData Loading
-    func coreDataFetch() {
-        
-        let fetchRequest = NSFetchRequest(entityName: "Info")
-        
-        do{
-            let results = try appDelegate.managedObjectContext.executeFetchRequest(fetchRequest)
-            persons = results as! [NSManagedObject]
-        } catch let error as NSError {
-            print("Could not Load Core Data \(error), \(error.userInfo)")
-        }
-    }
-    
-    //CoreData Saving
-    func coreDataSave() {
-        
-        do{
-            try appDelegate.managedObjectContext.save()
-        } catch let error as NSError{
-            print("Could not save \(error), \(error.userInfo)")
-        }
-    }
-    
     //CoreData Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.Delete {
             
-            let itemToDelete = persons[indexPath.row]
-            
-            appDelegate.managedObjectContext.deleteObject(itemToDelete)
-            
-            coreDataSave()
-            
-            coreDataFetch()
+            persons.removeAtIndex(indexPath.row)
             
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             
@@ -122,14 +91,14 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     //Setting tableViewCell
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
-        let person: NSManagedObject
+        let person: ContactInfo
         if searchController.active && searchController.searchBar.text != "" {
             person = filteredPersons[indexPath.row]
         } else {
             person = persons[indexPath.row]
         }
-        cell.textLabel?.text = person.valueForKey("name") as? String
-        cell.detailTextLabel?.text = person.valueForKey("phoneNumber") as? String
+        cell.textLabel?.text = person.name
+        cell.detailTextLabel?.text = person.phoneNumber
         return cell
     }
     
@@ -145,26 +114,26 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                 searchController.active = false
                 let selectedRow = (sender as? NSIndexPath)?.row
                 
-                if let name = persons[selectedRow!].valueForKey("name") as? String {
+                if let name = persons[selectedRow!].name as? String{
                     destinationVC.nameInfoLabel.text = name
                 }else{
                     print("name is null")
                 }
                 
-                if let name = persons[selectedRow!].valueForKey("phoneNumber") as? String {
-                    destinationVC.phoneNumberInfoLabel.text = name
+                if let phoneNumber = persons[selectedRow!].phoneNumber as? String {
+                    destinationVC.phoneNumberInfoLabel.text = phoneNumber
                 }else{
                     print("phoneNumber is null")
                 }
                 
-                if let name = persons[selectedRow!].valueForKey("companyName") as? String {
-                    destinationVC.companyNameInfoLabel.text = name
+                if let companyName = persons[selectedRow!].companyName as? String {
+                    destinationVC.companyNameInfoLabel.text = companyName
                 }else{
                     print("companyName is null")
                 }
                 
-                if let name = persons[selectedRow!].valueForKey("email") as? String {
-                    destinationVC.emailInfoLabel.text = name
+                if let email = persons[selectedRow!].email as? String {
+                    destinationVC.emailInfoLabel.text = email
                 }else{
                     print("email is null")
                 }
@@ -194,46 +163,35 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     //make a dummy
     func saveDummy()
     {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        
-        let managedContext = appDelegate.managedObjectContext
-        
-        let entity = NSEntityDescription.entityForName("Info", inManagedObjectContext: managedContext)
-        
-        let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
-        
-        person.setValue("lee", forKey: "name")
-        person.setValue("01042413030", forKey: "phoneNumber")
-        person.setValue("사람", forKey: "companyName")
-        person.setValue("aaa@naver.com", forKey: "email")
+       let dummyPerson = ContactInfo(name: "kim", phoneNumber: "01041095812", companyName: "aaaa", email: "vvv@naver.com")
+        persons.append(dummyPerson)
 
     }
     
+    func checkDuplication(phoneNumber: String, email: String) -> Bool{
+        for person in persons{
+            if person.phoneNumber == phoneNumber || person.email == email{
+                return true
+            }
+        }
+        return false
+    }
+    
+    
     //save to coredata
     func saveInfo(info: ContactInfo, reader: QRCodeReaderViewController) {
-        
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        
-        let managedContext = appDelegate.managedObjectContext
-        
-        let entity = NSEntityDescription.entityForName("Info", inManagedObjectContext: managedContext)
-        
-        let person = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
-        
-        person.setValue(info.name, forKey: "name")
-        person.setValue(info.phoneNumber, forKey: "phoneNumber")
-        person.setValue(info.companyName, forKey: "companyName")
-        person.setValue(info.email, forKey: "email")
-        do{
-            try managedContext.save()
+        if !checkDuplication(info.phoneNumber, email: info.email){
+            persons.append(info)
             let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(info.name)'s Info", preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
             reader.presentViewController(alert, animated: true, completion: nil)
-        } catch let error as NSError{
-            let alert = UIAlertController(title: "QRCodeReader Error", message: "Error code: \(error.code)", preferredStyle: .Alert)
+        }
+        else{
+            let alert = UIAlertController(title: "Failed Add New Item", message: "Same PhoneNumber or Same Email already exist", preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in self.dismissViewControllerAnimated(true, completion: nil)}))
             reader.presentViewController(alert, animated: true, completion: nil)
         }
+        
     }
 
 }
