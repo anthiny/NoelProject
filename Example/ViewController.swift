@@ -23,6 +23,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var emailTextField = UITextField()
     var emailLabel = UILabel()
     var generatingButton = UIButton()
+    var saveButton = UIButton()
     
     enum InputError: ErrorType{
         case noName
@@ -62,6 +63,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         inputContentsView.addSubview(emailTextField)
         inputContentsView.addSubview(emailLabel)
         superView.addSubview(generatingButton)
+        superView.addSubview(saveButton)
         
         qrImage.translatesAutoresizingMaskIntoConstraints = false
         inputContentsView.translatesAutoresizingMaskIntoConstraints = false
@@ -74,6 +76,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
         generatingButton.translatesAutoresizingMaskIntoConstraints = false
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
         
         qrImage.backgroundColor = UIColor.whiteColor()
         qrImage.snp_makeConstraints { (make) in
@@ -161,13 +164,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         generatingButton.backgroundColor = UIColor.whiteColor()
-        generatingButton.setTitle("Let's Do It!", forState: .Normal)
+        generatingButton.setTitle("Let's Make!", forState: .Normal)
         generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
         generatingButton.snp_makeConstraints { (make) in
             make.centerX.equalTo(superView.snp_centerX)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
+        
+        saveButton.backgroundColor = UIColor.whiteColor()
+        saveButton.setTitle("Save", forState: .Normal)
+        saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
+        saveButton.snp_makeConstraints { (make) in
+            make.leading.equalTo(generatingButton.snp_trailing).offset(10)
+            make.bottom.equalTo(superView.snp_bottom).offset(-10)
+        }
+
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -227,6 +240,49 @@ class ViewController: UIViewController, UITextFieldDelegate {
         var qrCodeContents = QRCode(Info.exchangeToQRString())
         qrCodeContents?.color = CIColor(color: UIColor.blueColor())
         qrImage.image=qrCodeContents?.image
+    }
+    
+    func filteredUIimageConvert(image: UIImage)->UIImage
+    {
+        UIGraphicsBeginImageContext(image.size)
+        
+        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
+        
+        let convertibleImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext()
+        
+        return convertibleImage
+    }
+    
+    func saveQRCode(button: UIButton){
+        if let image = qrImage.image{
+            UIImageWriteToSavedPhotosAlbum(filteredUIimageConvert(image), self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }else{
+            showAlert("QRCode Image is Empty!")
+        }
+    }
+    
+    func resetView() {
+        qrImage.image = nil
+        nameTextField.text=nil
+        phoneNumberTextField.text=nil
+        companyNameTextField.text=nil
+        emailTextField.text=nil
+    }
+    
+    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
+        if error == nil {
+            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .Alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(UIAlertAction) in
+                self.resetView()
+            }))
+            presentViewController(ac, animated: true, completion: nil)
+        } else {
+            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .Alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            presentViewController(ac, animated: true, completion: nil)
+        }
     }
     
     func showAlert(title: String, message: String? = nil){
