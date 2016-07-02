@@ -173,8 +173,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         saveButton.backgroundColor = UIColor.whiteColor()
-        saveButton.setTitle("Save", forState: .Normal)
-        saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
         saveButton.snp_makeConstraints { (make) in
             make.leading.equalTo(generatingButton.snp_trailing).offset(10)
