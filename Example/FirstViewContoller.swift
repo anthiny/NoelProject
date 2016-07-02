@@ -14,8 +14,8 @@ import Alamofire
 class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate, UISearchResultsUpdating {
 
     var persons = [ContactInfo]()
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate    
     lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "Cancel", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
+    
     let searchController = UISearchController(searchResultsController: nil)
     var filteredPersons = [ContactInfo]()
     
@@ -42,6 +42,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         }
     }
     
+    //Json to persons's Array
     func convertResponseData(responseData: AnyObject) {
         
         if let infoDict = responseData["info"] as? [AnyObject] {
@@ -103,7 +104,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                     }))
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
-               
         }
         
     }
@@ -112,7 +112,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         super.viewDidLoad()
         getAPI()
         navigationItem.leftBarButtonItem = editButtonItem()
-        //saveDummy()
         //Add searchBar
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
@@ -198,31 +197,17 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "showDetail" {
             if let destinationVC = segue.destinationViewController as? DetailViewController{
-
-                let selectedRow = (sender as? NSIndexPath)?.row
-                
-                if let name = persons[selectedRow!].name as? String{
-                    destinationVC.nameInfoLabel.text = name
-                }else{
-                    print("name is null")
-                }
-                
-                if let phoneNumber = persons[selectedRow!].phoneNumber as? String {
-                    destinationVC.phoneNumberInfoLabel.text = phoneNumber
-                }else{
-                    print("phoneNumber is null")
-                }
-                
-                if let companyName = persons[selectedRow!].companyName as? String {
-                    destinationVC.companyNameInfoLabel.text = companyName
-                }else{
-                    print("companyName is null")
-                }
-                
-                if let email = persons[selectedRow!].email as? String {
-                    destinationVC.emailInfoLabel.text = email
-                }else{
-                    print("email is null")
+                if let selectedRow = (sender as? NSIndexPath)?.row{
+                    let selectedItem = persons[selectedRow]
+                    if selectedItem.name.isEmpty || selectedItem.phoneNumber.isEmpty || selectedItem.companyName.isEmpty || selectedItem.email.isEmpty{
+                        print("Some information is empty!")
+                    }
+                    else{
+                        destinationVC.nameInfoLabel.text = selectedItem.name
+                        destinationVC.phoneNumberInfoLabel.text = selectedItem.phoneNumber
+                        destinationVC.companyNameInfoLabel.text = selectedItem.companyName
+                        destinationVC.emailInfoLabel.text = selectedItem.email
+                    }
                 }
             }
         }
@@ -254,14 +239,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //make a dummy
-    func saveDummy()
-    {
-       let dummyPerson = ContactInfo(name: "kim", phoneNumber: "01041095812", companyName: "aaaa", email: "vvv@naver.com")
-        persons.append(dummyPerson)
-
-    }
-    
+    //Check Duplication before Add
     func checkDuplication(phoneNumber: String, email: String) -> Bool{
         for person in persons{
             if person.phoneNumber == phoneNumber || person.email == email{
