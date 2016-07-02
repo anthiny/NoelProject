@@ -40,13 +40,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         phoneNumberTextField.delegate = self
         companyNameTextField.delegate = self
         emailTextField.delegate = self
-        // Do any additional setup after loading the view, typically from a nib.
-        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func setContentsConstrant(){
@@ -164,7 +161,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         generatingButton.backgroundColor = UIColor.whiteColor()
-        generatingButton.setTitle("Let's Make!", forState: .Normal)
+        generatingButton.setTitle("MAKE", forState: .Normal)
         generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
         generatingButton.snp_makeConstraints { (make) in
@@ -173,6 +170,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         saveButton.backgroundColor = UIColor.whiteColor()
+        saveButton.setTitle("SAVE", forState: .Normal)
+        saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
         saveButton.snp_makeConstraints { (make) in
             make.leading.equalTo(generatingButton.snp_trailing).offset(10)
@@ -292,8 +291,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         presentViewController(alertController, animated: true, completion: nil)
     }
-    
-    
 
 }
 
