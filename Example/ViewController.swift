@@ -234,8 +234,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: emailTextField.text!)
-        var qrCodeContents = QRCode(Info.exchangeToQRString())
-        qrCodeContents?.color = CIColor(color: UIColor.blueColor())
+        let qrCodeContents = QRCode(Info.exchangeToQRString())
         qrImage.image=qrCodeContents?.image
     }
     
