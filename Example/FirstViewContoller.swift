@@ -81,7 +81,8 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                     let alert = UIAlertController(title: "Success Add New Item!", message: "Add \(target.name)'s Info", preferredStyle: .Alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(action: UIAlertAction) in
                         self.persons.append(target)
-                        self.dismissViewControllerAnimated(true, completion: nil)}))
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }))
                     reader.presentViewController(alert, animated: true, completion: nil)
                 }
                 else{
@@ -219,7 +220,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                     }
         
                     if selectedItem.name.isEmpty || selectedItem.phoneNumber.isEmpty || selectedItem.companyName.isEmpty || selectedItem.email.isEmpty{
-                        let alert = UIAlertController(title: "Error !", message: "SelectedCell does not have Enough Information", preferredStyle: .Alert)
+                        let alert = UIAlertController(title: "Error !", message: "Selected Cell does not have Enough Information", preferredStyle: .Alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
                         presentViewController(alert, animated: true, completion: nil)
                     }
