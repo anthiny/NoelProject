@@ -38,6 +38,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                     print(JSON)
                 }
                 else{
+                    self.dismissViewControllerAnimated(true, completion: nil)
                     let alert = UIAlertController(title: "Error !", message: "You can't access to server. \n Check Your Internet", preferredStyle: .Alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(UIAlertAction) in exit(0)}))
                     self.presentViewController(alert, animated: true, completion: nil)

@@ -22,6 +22,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var companyNameLabel = UILabel()
     var emailTextField = UITextField()
     var emailLabel = UILabel()
+    var lineLabel = UILabel()
     var generatingButton = UIButton()
     var saveButton = UIButton()
     
@@ -59,6 +60,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         inputContentsView.addSubview(companyNameLabel)
         inputContentsView.addSubview(emailTextField)
         inputContentsView.addSubview(emailLabel)
+        superView.addSubview(lineLabel)
         superView.addSubview(generatingButton)
         superView.addSubview(saveButton)
         
@@ -72,9 +74,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
         companyNameLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        lineLabel.translatesAutoresizingMaskIntoConstraints = false
         generatingButton.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
+        //qrImage.clipsToBounds
+        qrImage.layer.borderColor = UIColor.blackColor().CGColor
+        qrImage.layer.borderWidth = 0.5
         qrImage.backgroundColor = UIColor.whiteColor()
         qrImage.snp_makeConstraints { (make) in
             make.top.equalTo(superView.snp_top).offset(90)
@@ -160,21 +166,34 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
         
+        lineLabel.backgroundColor = UIColor.whiteColor()
+        lineLabel.text = "|"
+        lineLabel.snp_makeConstraints { (make) in
+            make.centerX.equalTo(superView.snp_centerX)
+            make.bottom.equalTo(superView.snp_bottom).offset(-18)
+        }
+        
         generatingButton.backgroundColor = UIColor.whiteColor()
+        generatingButton.layer.borderWidth = 0.5
+        generatingButton.layer.borderColor = UIColor.blackColor().CGColor
+        generatingButton.layer.cornerRadius = 5.0
         generatingButton.setTitle("MAKE", forState: .Normal)
         generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
         generatingButton.snp_makeConstraints { (make) in
-            make.centerX.equalTo(superView.snp_centerX)
+            make.trailing.equalTo(lineLabel.snp_leading).offset(-5)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
         
+        saveButton.layer.borderWidth = 0.5
+        saveButton.layer.borderColor = UIColor.blackColor().CGColor
+        saveButton.layer.cornerRadius = 5.0
         saveButton.backgroundColor = UIColor.whiteColor()
         saveButton.setTitle("SAVE", forState: .Normal)
         saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
         saveButton.snp_makeConstraints { (make) in
-            make.leading.equalTo(generatingButton.snp_trailing).offset(10)
+            make.leading.equalTo(lineLabel.snp_trailing).offset(5)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
 
@@ -234,8 +253,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: emailTextField.text!)
-        let qrCodeContents = QRCode(Info.exchangeToQRString())
-        qrImage.image=qrCodeContents?.image
+        if let qrCodeContents = QRCode(Info.exchangeToQRString()){
+            qrImage.image=qrCodeContents.image
+        }else{
+            showAlert("Error on QRCode converting!")
+        }
     }
     
     func filteredUIimageConvert(image: UIImage)->UIImage
