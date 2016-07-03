@@ -46,7 +46,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
-        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -73,7 +72,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -336,6 +335,5 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         presentViewController(alertController, animated: true, completion: nil)
     }
-
 }
 

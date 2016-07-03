@@ -278,5 +278,4 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             return false
         }
     }
-
 }
