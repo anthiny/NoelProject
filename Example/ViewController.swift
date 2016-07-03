@@ -22,9 +22,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var companyNameLabel = UILabel()
     var emailTextField = UITextField()
     var emailLabel = UILabel()
-    var lineLabel = UILabel()
     var generatingButton = UIButton()
     var saveButton = UIButton()
+    var originValue: CGFloat = 0.0
     
     enum InputError: ErrorType{
         case noName
@@ -41,14 +41,46 @@ class ViewController: UIViewController, UITextFieldDelegate {
         phoneNumberTextField.delegate = self
         companyNameTextField.delegate = self
         emailTextField.delegate = self
+        originValue = self.view.frame.origin.y
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
     }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func keyboardWillShow(notification:NSNotification) {
+        adjustingHeight(true, notification: notification)
+        
+    }
+    
+    func keyboardWillHide(notification:NSNotification) {
+        adjustingHeight(false, notification: notification)
+    }
+    
+    func adjustingHeight(show:Bool, notification:NSNotification) {
+        if show{
+            if originValue == self.view.frame.origin.y{
+                self.view.frame.origin.y -= 200
+            }
+        }else {
+            self.view.frame.origin.y += 200
 
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
     func setContentsConstrant(){
         let superView = self.view
+        let borderWidth: CGFloat = 0.5
+        let cornerRadius: CGFloat = 5.0
         
         superView.addSubview(qrImage)
         superView.addSubview(inputContentsView)
@@ -60,7 +92,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         inputContentsView.addSubview(companyNameLabel)
         inputContentsView.addSubview(emailTextField)
         inputContentsView.addSubview(emailLabel)
-        superView.addSubview(lineLabel)
         superView.addSubview(generatingButton)
         superView.addSubview(saveButton)
         
@@ -74,13 +105,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         companyNameLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
-        lineLabel.translatesAutoresizingMaskIntoConstraints = false
         generatingButton.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
-        //qrImage.clipsToBounds
         qrImage.layer.borderColor = UIColor.blackColor().CGColor
-        qrImage.layer.borderWidth = 0.5
+        qrImage.layer.borderWidth = borderWidth
         qrImage.backgroundColor = UIColor.whiteColor()
         qrImage.snp_makeConstraints { (make) in
             make.top.equalTo(superView.snp_top).offset(90)
@@ -124,6 +153,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         phoneNumberTextField.borderStyle = .RoundedRect
         phoneNumberTextField.backgroundColor = UIColor.clearColor()
+        phoneNumberTextField.keyboardType = .NumberPad
         phoneNumberTextField.snp_makeConstraints { (make) in
             make.top.equalTo(nameTextField.snp_bottom).offset(3)
             make.leading.equalTo(phoneNumberLabel.snp_trailing).offset(10)
@@ -166,34 +196,27 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
         
-        lineLabel.backgroundColor = UIColor.whiteColor()
-        lineLabel.text = "|"
-        lineLabel.snp_makeConstraints { (make) in
-            make.centerX.equalTo(superView.snp_centerX)
-            make.bottom.equalTo(superView.snp_bottom).offset(-18)
-        }
-        
         generatingButton.backgroundColor = UIColor.whiteColor()
-        generatingButton.layer.borderWidth = 0.5
+        generatingButton.layer.borderWidth = borderWidth
         generatingButton.layer.borderColor = UIColor.blackColor().CGColor
-        generatingButton.layer.cornerRadius = 5.0
+        generatingButton.layer.cornerRadius = cornerRadius
         generatingButton.setTitle("MAKE", forState: .Normal)
         generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
         generatingButton.snp_makeConstraints { (make) in
-            make.trailing.equalTo(lineLabel.snp_leading).offset(-5)
+            make.trailing.equalTo(superView.snp_centerX).offset(-5)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
         
-        saveButton.layer.borderWidth = 0.5
+        saveButton.layer.borderWidth = borderWidth
         saveButton.layer.borderColor = UIColor.blackColor().CGColor
-        saveButton.layer.cornerRadius = 5.0
+        saveButton.layer.cornerRadius = cornerRadius
         saveButton.backgroundColor = UIColor.whiteColor()
         saveButton.setTitle("SAVE", forState: .Normal)
         saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
         saveButton.snp_makeConstraints { (make) in
-            make.leading.equalTo(lineLabel.snp_trailing).offset(5)
+            make.leading.equalTo(superView.snp_centerX).offset(5)
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
 
@@ -312,6 +335,5 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         presentViewController(alertController, animated: true, completion: nil)
     }
-
 }
 
