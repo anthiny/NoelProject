@@ -156,10 +156,13 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
 
     //updating SearchResult
     func updateSearchResultsForSearchController(searchController: UISearchController) {
+        if editing == true{
+            setEditing(false, animated: true)
+        }
         filterContentForSearchText(searchController.searchBar.text!)
     }
     
-    //CoreData Editing (delete)
+    //Table Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         print(editingStyle)
         if editingStyle == UITableViewCellEditingStyle.Delete {
