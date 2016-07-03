@@ -1,7 +1,7 @@
 # QRCode Card Manager
 ## QRCode를 이용한 간단한 연락처 관리 Application.
 
-1. App의 구성
+##App의 구성
   1. MainView
     * 전반적인 목록관리 및 검색 가능
   2. QRCodeMakeView
@@ -39,3 +39,4 @@
   1. python-flask를 이용해서 간단한 서버관련 코드 작성하였습니다.
   2. postgres DB를 사용하였습니다.
   3. heroku를 사용해서 서버를 운영 중입니다.
+  4. Link: https://github.com/anthiny/ServerForNoel.git
