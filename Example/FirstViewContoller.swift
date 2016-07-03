@@ -150,6 +150,10 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         self.tableView.reloadData()
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        setEditing(false, animated: true)
+    }
+
     //updating SearchResult
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
@@ -157,7 +161,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     
     //CoreData Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
+        print(editingStyle)
         if editingStyle == UITableViewCellEditingStyle.Delete {
             
             let target = persons[indexPath.row]
@@ -271,6 +275,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         return false
     }
     
+    //check Search Bar Using
     func checkSearchBarUsing() -> Bool{
         if searchController.active && searchController.searchBar.text != ""{
             return true
