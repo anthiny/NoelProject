@@ -164,7 +164,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     
     //Table Editing (delete)
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        print(editingStyle)
         if editingStyle == UITableViewCellEditingStyle.Delete {
             
             let target = persons[indexPath.row]
