@@ -45,11 +45,15 @@ QRCode를 이용한 간단한 연락처 관리 Application.
   4) 특정 Cell를 검색하거나, 특정 Cell를 터치하면 상세 정보를 보기가 가능합니다.
   
 4. Build 방법
-  1) terminal 실행-> sudo gem install cocoapods 입력 -> 해당 컴퓨터 계정의 비밀번호 입력
-  -> 설치 완료시 pod setup입력 후 setup completed가 나온다면 정상적으로 설치가 된 것입니다.
+
+  1) terminal 실행-> sudo gem install cocoapods 입력 -> 해당 컴퓨터 계정의 비밀번호 입력 -> 설치 완료시 pod setup입력 후 setup completed가 나온다면 정상적으로 설치가 완료된 것입니다.
+  
   2) terminal 실행-> cd 다운 받은 프로젝트 폴더 -> pod install 입력
+  
   3) 빌드를 실행할 Device를 컴퓨터에 연결 합니다.
-  3) X-code에서 빌드할 Device를 선택한 후 빌드를 시작하면 됩니다.
+  
+  4) X-code에서 빌드할 Device를 선택한 후 빌드를 시작하면 됩니다.
+  
 5. 서버관련 ()
   1) python-flask를 이용해서 간단한 서버관련 코드 작성하였습니다.
   2) postgres DB를 사용하였습니다.
