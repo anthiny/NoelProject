@@ -1,42 +1,27 @@
 # QRCode Card Manager
-QRCode를 이용한 간단한 연락처 관리 Application.
+## QRCode를 이용한 간단한 연락처 관리 Application.
 
 1. App의 구성
-  
-  1) MainView
-    
-    - 전반적인 목록관리 및 검색 가능
-  
-  2) QRCodeMakeView
-  
-    - QRCode 생성 및 저장 가능
-  
-  3) QRCodeScanView
-  
-    - QRCode Scan 및 목록에 저장
-  
-  4) DetailView
-  
-    - 해당 목록의 상세 정보 열람
-    
-2. 사용한 FrameWork
-  
-  1) QRCode
-    - QRCode 생성하기 위한 것
-  
-  2) QRCodeReader
-    - QRCode Scan
-  
-  3) SnapKit
-    - 쉽게 Programmatically UI 배치 가능 (AutoLayout)
-  
-  4) Alamofire
-   - HTTP Networking 관련 동작들을 위한 FrameWork
-   - 주로 API 용도로 사용
-   
+  1. MainView
+    * 전반적인 목록관리 및 검색 가능
+  2. QRCodeMakeView
+    * QRCode 생성 및 저장 가능
+  3. QRCodeScanView
+    * QRCode Scan 및 목록에 저장
+  4. DetailView
+    * 해당 목록의 상세 정보 열람
+2. 사용한 Framework
+  1. QRCode
+    * QRCode 생성하기 위한 것
+  2. QRCodeReader
+    * QRCode Scan
+  3. SnapKit
+    * 쉽게 Programmatically UI 배치 가능 (AutoLayout)
+  4. Alamofire
+    * HTTP Networking 관련 동작들을 위한 FrameWork
+    * 주로 API 용도로 사용
 3. 동작관련
-4. 
-  1) Launch Scree 종료 후 서버에서 정보목록을 받아 TableView로 보여줍니다. 만약 통신이 실패할 경우 알림 창으로 사실을 알리고, 프로그램은 종료됩니다.
+  1. Launch Scree 종료 후 서버에서 정보목록을 받아 TableView로 보여줍니다. 만약 통신이 실패할 경우 알림 창으로 사실을 알리고, 프로그램은 종료됩니다.
   
   2) 성공적으로 정보들을 받았다면, Add, Edit 버튼을 이용해서 추가 정보를 추가하거나 기존 정보를 삭제할 수 있습니다. (추가/삭제 동작을 할때 마다 그에 상응하는 통신을 수행하게 됩니다.)
   
