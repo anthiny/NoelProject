@@ -13,13 +13,17 @@
 2. 사용한 Framework
   1. QRCode
     * QRCode 생성하기 위한 것
+    * Link: https://github.com/aschuch/QRCode.git
   2. QRCodeReader
     * QRCode Scan
+    * Link: https://github.com/yannickl/QRCodeReader.swift.git
   3. SnapKit
     * 쉽게 Programmatically UI 배치 가능 (AutoLayout)
+    * Link: https://github.com/SnapKit/SnapKit.gi
   4. Alamofire
     * HTTP Networking 관련 동작들을 위한 FrameWork
     * 주로 API 용도로 사용
+    * Link: https://github.com/Alamofire/Alamofire.git
 3. 동작관련
   1. Launch Scree 종료 후 서버에서 정보목록을 받아 TableView로 보여줍니다. 만약 통신이 실패할 경우 알림 창으로 사실을 알리고, 프로그램은 종료됩니다.
   2. 성공적으로 정보들을 받았다면, Add, Edit 버튼을 이용해서 추가 정보를 추가하거나 기존 정보를 삭제할 수 있습니다. (추가/삭제 동작을 할때 마다 그에 상응하는 통신을 수행하게 됩니다.)
