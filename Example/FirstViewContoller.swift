@@ -22,17 +22,20 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     let userID = UIDevice.currentDevice().identifierForVendor!.UUIDString
     let divid = 100000000
     
+    var isNotFirst = true
+    let time = NSDate()
+    
     //getAPi
     func getAPI(){
         let hashedUserID = userID.hashValue%divid
         let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)"
-        print(requestURL)
+        print("\(requestURL)     \(time)")
         Alamofire.request(.GET, requestURL, parameters: nil)
             .responseJSON { response in
                 print("get-\(response.result)")   // result of response serialization
                 if let JSON = response.result.value {
-                    print(JSON)
                     self.convertResponseData(JSON)
+                    print(JSON)
                 }
                 else{
                     let alert = UIAlertController(title: "Error !", message: "You can't access to server. \n Check Your Internet", preferredStyle: .Alert)
@@ -44,7 +47,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     
     //Json to persons's Array
     func convertResponseData(responseData: AnyObject) {
-        
         if let infoDict = responseData["info"] as? [AnyObject] {
             for dict2 in infoDict{
                 let name = dict2["name"] as? String
@@ -54,6 +56,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
                 let newPerson = ContactInfo(name: name!, phoneNumber: phoneNumber!, companyName: companyName!, email: email!)
                 persons.append(newPerson)
             }
+            dismissViewControllerAnimated(true, completion: nil)
             self.tableView.reloadData()
         }
     }
@@ -110,7 +113,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        getAPI()
         navigationItem.leftBarButtonItem = editButtonItem()
         //Add searchBar
         searchController.searchResultsUpdater = self
@@ -118,6 +120,15 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.sizeToFit()
         self.tableView.tableHeaderView = searchController.searchBar
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if isNotFirst{
+            getAPI()
+            let alertController = UIAlertController(title: "Load Data", message: "Loading.....", preferredStyle: UIAlertControllerStyle.Alert)
+            presentViewController(alertController, animated: true, completion: nil)
+            isNotFirst = false
+        }
     }
     
     //SearchBar Filter
@@ -133,6 +144,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     override func viewWillAppear(animated: Bool) {
+        
         self.tableView.reloadData()
     }
     
