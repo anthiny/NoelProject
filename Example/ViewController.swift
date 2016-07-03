@@ -49,6 +49,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func setContentsConstrant(){
         let superView = self.view
+        let borderWidth: CGFloat = 0.5
+        let cornerRadius: CGFloat = 5.0
         
         superView.addSubview(qrImage)
         superView.addSubview(inputContentsView)
@@ -80,7 +82,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         //qrImage.clipsToBounds
         qrImage.layer.borderColor = UIColor.blackColor().CGColor
-        qrImage.layer.borderWidth = 0.5
+        qrImage.layer.borderWidth = borderWidth
         qrImage.backgroundColor = UIColor.whiteColor()
         qrImage.snp_makeConstraints { (make) in
             make.top.equalTo(superView.snp_top).offset(90)
@@ -174,9 +176,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         generatingButton.backgroundColor = UIColor.whiteColor()
-        generatingButton.layer.borderWidth = 0.5
+        generatingButton.layer.borderWidth = borderWidth
         generatingButton.layer.borderColor = UIColor.blackColor().CGColor
-        generatingButton.layer.cornerRadius = 5.0
+        generatingButton.layer.cornerRadius = cornerRadius
         generatingButton.setTitle("MAKE", forState: .Normal)
         generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
@@ -185,9 +187,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.bottom.equalTo(superView.snp_bottom).offset(-10)
         }
         
-        saveButton.layer.borderWidth = 0.5
+        saveButton.layer.borderWidth = borderWidth
         saveButton.layer.borderColor = UIColor.blackColor().CGColor
-        saveButton.layer.cornerRadius = 5.0
+        saveButton.layer.cornerRadius = cornerRadius
         saveButton.backgroundColor = UIColor.whiteColor()
         saveButton.setTitle("SAVE", forState: .Normal)
         saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)

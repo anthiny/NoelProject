@@ -14,22 +14,23 @@ import Alamofire
 class FirstViewController: UITableViewController, QRCodeReaderViewControllerDelegate, UISearchResultsUpdating {
 
     var persons = [ContactInfo]()
+    var filteredPersons = [ContactInfo]()
+
     lazy var readerVC = QRCodeReaderViewController(cancelButtonTitle: "Cancel", codeReader: QRCodeReader(), startScanningAtLoad: true, showSwitchCameraButton: false, showTorchButton: false)
     
     let searchController = UISearchController(searchResultsController: nil)
-    var filteredPersons = [ContactInfo]()
     
     let userID = UIDevice.currentDevice().identifierForVendor!.UUIDString
+    let URL = "https://omegaapp.herokuapp.com/person/"
     let divid = 100000000
     
     var isNotFirst = true
-    let time = NSDate()
     
     //getAPi
     func getAPI(){
         let hashedUserID = userID.hashValue%divid
-        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)"
-        print("\(requestURL)     \(time)")
+        let requestURL = URL+"\(hashedUserID)"
+        print(requestURL)
         Alamofire.request(.GET, requestURL, parameters: nil)
             .responseJSON { response in
                 print("get-\(response.result)")   // result of response serialization
@@ -66,7 +67,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     func addAPI(target: ContactInfo, reader: QRCodeReaderViewController){
         let hashedUserID = userID.hashValue%divid
         let targetPhone = target.phoneNumber
-        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)/info/\(targetPhone)"
+        let requestURL = URL+"\(hashedUserID)/info/\(targetPhone)"
         let parameters = [
             "name": target.name,
             "phone": target.phoneNumber,
@@ -94,12 +95,11 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     //DeleteAPI
     func deleteAPI(target: ContactInfo, indexPath: NSIndexPath){
         let hashedUserID = userID.hashValue%divid
-        let requestURL = "https://omegaapp.herokuapp.com/person/\(hashedUserID)/info/\(target.phoneNumber)"
+        let requestURL = URL+"\(hashedUserID)/info/\(target.phoneNumber)"
         
         Alamofire.request(.DELETE, requestURL, parameters: nil)
             .responseJSON { response in
                 print("delete-\(response.result)")   // result of response serialization
-                
                 if let JSON = response.result.value {
                     let alert = UIAlertController(title: "Success Delete Item!", message: "\(target.name) Item is deleted", preferredStyle: .Alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: {(UIAlertAction) in
@@ -117,8 +117,9 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         navigationItem.leftBarButtonItem = editButtonItem()
         //Add searchBar
         searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
         searchController.dimsBackgroundDuringPresentation = false
+        definesPresentationContext = true
         searchController.searchBar.sizeToFit()
         self.tableView.tableHeaderView = searchController.searchBar
     }
@@ -145,7 +146,6 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
     
     override func viewWillAppear(animated: Bool) {
-        
         self.tableView.reloadData()
     }
     
@@ -180,8 +180,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if searchController.active && searchController.searchBar.text != "" {
+        if checkSearchBarUsing() {
             return filteredPersons.count
         }
         return persons.count
@@ -191,7 +190,7 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         let person: ContactInfo
-        if searchController.active && searchController.searchBar.text != "" {
+        if checkSearchBarUsing() {
             person = filteredPersons[indexPath.row]
         } else {
             person = persons[indexPath.row]
@@ -211,9 +210,18 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
         if segue.identifier == "showDetail" {
             if let destinationVC = segue.destinationViewController as? DetailViewController{
                 if let selectedRow = (sender as? NSIndexPath)?.row{
-                    let selectedItem = persons[selectedRow]
+                    let selectedItem: ContactInfo
+                    
+                    if checkSearchBarUsing(){
+                        selectedItem = filteredPersons[selectedRow]
+                    }else{
+                         selectedItem = persons[selectedRow]
+                    }
+        
                     if selectedItem.name.isEmpty || selectedItem.phoneNumber.isEmpty || selectedItem.companyName.isEmpty || selectedItem.email.isEmpty{
-                        print("Some information is empty!")
+                        let alert = UIAlertController(title: "Error !", message: "SelectedCell does not have Enough Information", preferredStyle: .Alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+                        presentViewController(alert, animated: true, completion: nil)
                     }
                     else{
                         destinationVC.nameInfoLabel.text = selectedItem.name
@@ -260,6 +268,14 @@ class FirstViewController: UITableViewController, QRCodeReaderViewControllerDele
             }
         }
         return false
+    }
+    
+    func checkSearchBarUsing() -> Bool{
+        if searchController.active && searchController.searchBar.text != ""{
+            return true
+        }else{
+            return false
+        }
     }
 
 }
