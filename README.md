@@ -1,7 +1,7 @@
 # QRCode Card Manager
 ## QRCode를 이용한 간단한 연락처 관리 Application.
 
-##App의 구성
+###App의 구성
   1. MainView
     * 전반적인 목록관리 및 검색 가능
   2. QRCodeMakeView
