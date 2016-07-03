@@ -35,7 +35,9 @@ QRCode를 이용한 간단한 연락처 관리 Application.
    - 주로 API 용도로 사용
    
 3. 동작관련
-  
+
+  1) https://github.com/anthiny/NoelProject.git에서 Clone or Zip파일을 다운받습니다.
+
   1) Launch Scree 종료 후 서버에서 정보목록을 받아 TableView로 보여줍니다. 만약 통신이 실패할 경우 알림 창으로 사실을 알리고, 프로그램은 종료됩니다.
   
   2) 성공적으로 정보들을 받았다면, Add, Edit 버튼을 이용해서 추가 정보를 추가하거나 기존 정보를 삭제할 수 있습니다. (추가/삭제 동작을 할때 마다 그에 상응하는 통신을 수행하게 됩니다.)
@@ -54,7 +56,10 @@ QRCode를 이용한 간단한 연락처 관리 Application.
   
   4) X-code에서 빌드할 Device를 선택한 후 빌드를 시작하면 됩니다.
   
-5. 서버관련 ()
+5. 서버관련
+
   1) python-flask를 이용해서 간단한 서버관련 코드 작성하였습니다.
+  
   2) postgres DB를 사용하였습니다.
+  
   3) heroku를 사용해서 서버를 운영 중입니다.
