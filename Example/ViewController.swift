@@ -32,6 +32,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         case noCompanyName
         case noEmail
         case OutOfRange
+        case nameTooLong
+        case companyNameTooLong
+        case emailTooLong
     }
     
     override func viewDidLoad() {
@@ -248,7 +251,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         catch InputError.OutOfRange{
             showAlert("PhoneNumber's length is Out Of Range")
-        }catch {
+        }catch InputError.nameTooLong{
+            showAlert("Name's length is Too Long")
+        }catch InputError.companyNameTooLong{
+            showAlert("CompanyName's length is Too Long")
+        }catch InputError.emailTooLong{
+            showAlert("Email's length is Too Long")
+        }
+        catch {
             showAlert("Exceptional Error!")
         }
     }
@@ -273,6 +283,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
         guard phoneNumberTextField.text?.characters.count < 12 else {
             throw InputError.OutOfRange
+        }
+        
+        guard nameTextField.text?.characters.count < 31 else {
+            throw InputError.nameTooLong
+        }
+        
+        guard companyNameTextField.text?.characters.count < 31 else {
+            throw InputError.companyNameTooLong
+        }
+        
+        guard emailTextField.text?.characters.count < 31 else {
+            throw InputError.emailTooLong
         }
         
         let Info = ContactInfo(name: nameTextField.text!, phoneNumber: phoneNumberTextField.text!, companyName: companyNameTextField.text!, email: emailTextField.text!)
