@@ -240,21 +240,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
             try generatingQRcode()
         }catch InputError.noName{
             showAlert("Your name space is empty")
-        }catch InputError.noPhoneNumber{
-            showAlert("Your PhoneNumber space is empty")
-        }
-        catch InputError.noCompanyName{
-            showAlert("Your CompanyName space is empty")
-        }
-        catch InputError.noEmail{
-            showAlert("Your Email space is empty")
-        }
-        catch InputError.OutOfRange{
-            showAlert("PhoneNumber's length is Out Of Range")
         }catch InputError.nameTooLong{
             showAlert("Name's length is Too Long")
+        }catch InputError.noPhoneNumber{
+            showAlert("Your PhoneNumber space is empty")
+        }catch InputError.OutOfRange{
+            showAlert("PhoneNumber's length is Out Of Range")
+        }catch InputError.noCompanyName{
+            showAlert("Your CompanyName space is empty")
         }catch InputError.companyNameTooLong{
             showAlert("CompanyName's length is Too Long")
+        }catch InputError.noEmail{
+            showAlert("Your Email space is empty")
         }catch InputError.emailTooLong{
             showAlert("Email's length is Too Long")
         }
@@ -269,30 +266,30 @@ class ViewController: UIViewController, UITextFieldDelegate {
             throw InputError.noName
         }
         
+        guard nameTextField.text?.characters.count < 31 else {
+            throw InputError.nameTooLong
+        }
+        
         guard phoneNumberTextField.text?.isEmpty == false else {
             throw InputError.noPhoneNumber
+        }
+        
+        guard phoneNumberTextField.text?.characters.count < 12 else {
+            throw InputError.OutOfRange
         }
         
         guard companyNameTextField.text?.isEmpty == false else {
             throw InputError.noCompanyName
         }
         
-        guard emailTextField.text?.isEmpty == false else {
-            throw InputError.noEmail
-        }
-
-        guard phoneNumberTextField.text?.characters.count < 12 else {
-            throw InputError.OutOfRange
-        }
-        
-        guard nameTextField.text?.characters.count < 31 else {
-            throw InputError.nameTooLong
-        }
-        
         guard companyNameTextField.text?.characters.count < 31 else {
             throw InputError.companyNameTooLong
         }
         
+        guard emailTextField.text?.isEmpty == false else {
+            throw InputError.noEmail
+        }
+
         guard emailTextField.text?.characters.count < 31 else {
             throw InputError.emailTooLong
         }
