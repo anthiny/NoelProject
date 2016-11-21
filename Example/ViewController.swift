@@ -9,6 +9,19 @@
 import UIKit
 import QRCode
 import SnapKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 class ViewController: UIViewController, UITextFieldDelegate {
     
@@ -26,12 +39,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var saveButton = UIButton()
     var originValue: CGFloat = 0.0
     
-    enum InputError: ErrorType{
+    enum InputError: Error{
         case noName
         case noPhoneNumber
         case noCompanyName
         case noEmail
-        case OutOfRange
+        case outOfRange
         case nameTooLong
         case companyNameTooLong
         case emailTooLong
@@ -46,26 +59,26 @@ class ViewController: UIViewController, UITextFieldDelegate {
         emailTextField.delegate = self
         originValue = self.view.frame.origin.y
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.keyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func keyboardWillShow(notification:NSNotification) {
+    func keyboardWillShow(_ notification:Notification) {
         adjustingHeight(true, notification: notification)
         
     }
     
-    func keyboardWillHide(notification:NSNotification) {
+    func keyboardWillHide(_ notification:Notification) {
         adjustingHeight(false, notification: notification)
     }
     
-    func adjustingHeight(show:Bool, notification:NSNotification) {
+    func adjustingHeight(_ show:Bool, notification:Notification) {
         if show{
             if originValue == self.view.frame.origin.y{
                 self.view.frame.origin.y -= 200
@@ -85,8 +98,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let borderWidth: CGFloat = 0.5
         let cornerRadius: CGFloat = 5.0
         
-        superView.addSubview(qrImage)
-        superView.addSubview(inputContentsView)
+        superView?.addSubview(qrImage)
+        superView?.addSubview(inputContentsView)
         inputContentsView.addSubview(nameTextField)
         inputContentsView.addSubview(nameLabel)
         inputContentsView.addSubview(phoneNumberTextField)
@@ -95,8 +108,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         inputContentsView.addSubview(companyNameLabel)
         inputContentsView.addSubview(emailTextField)
         inputContentsView.addSubview(emailLabel)
-        superView.addSubview(generatingButton)
-        superView.addSubview(saveButton)
+        superView?.addSubview(generatingButton)
+        superView?.addSubview(saveButton)
         
         qrImage.translatesAutoresizingMaskIntoConstraints = false
         inputContentsView.translatesAutoresizingMaskIntoConstraints = false
@@ -111,22 +124,22 @@ class ViewController: UIViewController, UITextFieldDelegate {
         generatingButton.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
-        qrImage.layer.borderColor = UIColor.blackColor().CGColor
+        qrImage.layer.borderColor = UIColor.black.cgColor
         qrImage.layer.borderWidth = borderWidth
-        qrImage.backgroundColor = UIColor.whiteColor()
+        qrImage.backgroundColor = UIColor.white
         qrImage.snp_makeConstraints { (make) in
-            make.top.equalTo(superView.snp_top).offset(90)
-            make.size.equalTo(150*UIScreen.mainScreen().bounds.height/500)
-            make.centerX.equalTo(superView.snp_centerX)
+            make.top.equalTo(superView!.snp_top).offset(90)
+            make.size.equalTo(150*UIScreen.main.bounds.height/500)
+            make.centerX.equalTo(superView!.snp_centerX)
         }
         
-        inputContentsView.backgroundColor = UIColor.whiteColor()
+        inputContentsView.backgroundColor = UIColor.white
         inputContentsView.snp_makeConstraints { (make) in
             make.top.equalTo(qrImage.snp_bottom).offset(35)
-            make.leading.equalTo(superView.snp_leading).offset(10)
-            make.trailing.equalTo(superView.snp_trailing).offset(-10)
-            make.bottom.equalTo(superView.snp_bottom).offset(-60)
-            make.centerX.equalTo(superView.snp_centerX)
+            make.leading.equalTo(superView!.snp_leading).offset(10)
+            make.trailing.equalTo(superView!.snp_trailing).offset(-10)
+            make.bottom.equalTo(superView!.snp_bottom).offset(-60)
+            make.centerX.equalTo(superView!.snp_centerX)
         }
         
         nameLabel.text = "Name"
@@ -137,8 +150,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.height.equalTo(phoneNumberLabel.snp_height)
         }
         
-        nameTextField.borderStyle = .RoundedRect
-        nameTextField.backgroundColor = UIColor.clearColor()
+        nameTextField.borderStyle = .roundedRect
+        nameTextField.backgroundColor = UIColor.clear
         nameTextField.snp_makeConstraints { (make) in
             make.top.equalTo(inputContentsView.snp_top).offset(5)
             make.leading.equalTo(nameLabel.snp_trailing).offset(10)
@@ -154,9 +167,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.height.equalTo(companyNameLabel.snp_height)
         }
         
-        phoneNumberTextField.borderStyle = .RoundedRect
-        phoneNumberTextField.backgroundColor = UIColor.clearColor()
-        phoneNumberTextField.keyboardType = .NumberPad
+        phoneNumberTextField.borderStyle = .roundedRect
+        phoneNumberTextField.backgroundColor = UIColor.clear
+        phoneNumberTextField.keyboardType = .numberPad
         phoneNumberTextField.snp_makeConstraints { (make) in
             make.top.equalTo(nameTextField.snp_bottom).offset(3)
             make.leading.equalTo(phoneNumberLabel.snp_trailing).offset(10)
@@ -172,8 +185,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.height.equalTo(emailLabel.snp_height)
         }
         
-        companyNameTextField.borderStyle = .RoundedRect
-        companyNameTextField.backgroundColor = UIColor.clearColor()
+        companyNameTextField.borderStyle = .roundedRect
+        companyNameTextField.backgroundColor = UIColor.clear
         companyNameTextField.snp_makeConstraints { (make) in
             make.top.equalTo(phoneNumberTextField.snp_bottom).offset(3)
             make.leading.equalTo(companyNameLabel.snp_trailing).offset(10)
@@ -189,9 +202,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
         
-        emailTextField.borderStyle = .RoundedRect
-        emailTextField.backgroundColor = UIColor.clearColor()
-        emailTextField.keyboardType = .EmailAddress
+        emailTextField.borderStyle = .roundedRect
+        emailTextField.backgroundColor = UIColor.clear
+        emailTextField.keyboardType = .emailAddress
         emailTextField.snp_makeConstraints { (make) in
             make.top.equalTo(companyNameTextField.snp_bottom).offset(3)
             make.leading.equalTo(emailLabel.snp_trailing).offset(10)
@@ -199,43 +212,43 @@ class ViewController: UIViewController, UITextFieldDelegate {
             make.bottom.equalTo(inputContentsView.snp_bottom).offset(-5)
         }
         
-        generatingButton.backgroundColor = UIColor.whiteColor()
+        generatingButton.backgroundColor = UIColor.white
         generatingButton.layer.borderWidth = borderWidth
-        generatingButton.layer.borderColor = UIColor.blackColor().CGColor
+        generatingButton.layer.borderColor = UIColor.black.cgColor
         generatingButton.layer.cornerRadius = cornerRadius
-        generatingButton.setTitle("MAKE", forState: .Normal)
-        generatingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        generatingButton.addTarget(self, action: #selector(generatingQRCode), forControlEvents: .TouchUpInside)
+        generatingButton.setTitle("MAKE", for: UIControlState())
+        generatingButton.setTitleColor(UIColor.black, for: UIControlState())
+        generatingButton.addTarget(self, action: #selector(generatingQRCode), for: .touchUpInside)
         generatingButton.snp_makeConstraints { (make) in
-            make.trailing.equalTo(superView.snp_centerX).offset(-5)
-            make.bottom.equalTo(superView.snp_bottom).offset(-10)
+            make.trailing.equalTo(superView!.snp_centerX).offset(-5)
+            make.bottom.equalTo(superView!.snp_bottom).offset(-10)
         }
         
         saveButton.layer.borderWidth = borderWidth
-        saveButton.layer.borderColor = UIColor.blackColor().CGColor
+        saveButton.layer.borderColor = UIColor.black.cgColor
         saveButton.layer.cornerRadius = cornerRadius
-        saveButton.backgroundColor = UIColor.whiteColor()
-        saveButton.setTitle("SAVE", forState: .Normal)
-        saveButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        saveButton.addTarget(self, action: #selector(saveQRCode), forControlEvents: .TouchUpInside)
+        saveButton.backgroundColor = UIColor.white
+        saveButton.setTitle("SAVE", for: UIControlState())
+        saveButton.setTitleColor(UIColor.black, for: UIControlState())
+        saveButton.addTarget(self, action: #selector(saveQRCode), for: .touchUpInside)
         saveButton.snp_makeConstraints { (make) in
-            make.leading.equalTo(superView.snp_centerX).offset(5)
-            make.bottom.equalTo(superView.snp_bottom).offset(-10)
+            make.leading.equalTo(superView!.snp_centerX).offset(5)
+            make.bottom.equalTo(superView!.snp_bottom).offset(-10)
         }
 
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
-        super.touchesBegan(touches, withEvent: event)
+        super.touchesBegan(touches, with: event)
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false
     }
 
-    func generatingQRCode(button: UIButton) {
+    func generatingQRCode(_ button: UIButton) {
         do{
             try generatingQRcode()
         }catch InputError.noName{
@@ -244,7 +257,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             showAlert("Name's length is Too Long")
         }catch InputError.noPhoneNumber{
             showAlert("Your PhoneNumber space is empty")
-        }catch InputError.OutOfRange{
+        }catch InputError.outOfRange{
             showAlert("PhoneNumber's length is Out Of Range")
         }catch InputError.noCompanyName{
             showAlert("Your CompanyName space is empty")
@@ -275,7 +288,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         guard phoneNumberTextField.text?.characters.count < 12 else {
-            throw InputError.OutOfRange
+            throw InputError.outOfRange
         }
         
         guard companyNameTextField.text?.isEmpty == false else {
@@ -302,20 +315,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func filteredUIimageConvert(image: UIImage)->UIImage
+    func filteredUIimageConvert(_ image: UIImage)->UIImage
     {
         UIGraphicsBeginImageContext(image.size)
         
-        image.drawInRect(CGRectMake(0, 0, image.size.width, image.size.height))
+        image.draw(in: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
         
         let convertibleImage = UIGraphicsGetImageFromCurrentImageContext()
         
         UIGraphicsEndImageContext()
         
-        return convertibleImage
+        return convertibleImage!
     }
     
-    func saveQRCode(button: UIButton){
+    func saveQRCode(_ button: UIButton){
         if let image = qrImage.image{
             UIImageWriteToSavedPhotosAlbum(filteredUIimageConvert(image), self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }else{
@@ -331,28 +344,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         emailTextField.text=nil
     }
     
-    func image(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafePointer<Void>) {
+    func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo:UnsafeRawPointer) {
         if error == nil {
-            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .Alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(UIAlertAction) in
+            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: {(UIAlertAction) in
                 self.resetView()
             }))
-            presentViewController(ac, animated: true, completion: nil)
+            present(ac, animated: true, completion: nil)
         } else {
-            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .Alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(ac, animated: true, completion: nil)
+            let ac = UIAlertController(title: "Save error", message: error?.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(ac, animated: true, completion: nil)
         }
     }
     
-    func showAlert(title: String, message: String? = nil){
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+    func showAlert(_ title: String, message: String? = nil){
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         
-        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         
         alertController.addAction(okAction)
         
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
