@@ -1,0 +1,21 @@
+PODS:
+  - Alamofire (4.2.0)
+  - QRCode (0.5)
+  - QRCodeReader.swift (7.2.0)
+  - SnapKit (3.0.2)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.0)
+  - QRCode
+  - QRCodeReader.swift (~> 7.2.0)
+  - SnapKit (~> 3.0.2)
+
+SPEC CHECKSUMS:
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  QRCode: a249ed747aeb0f4bf5f9c58b5b001b6b3bc80073
+  QRCodeReader.swift: 2ddf74993243106dd2be5cf9f6e13c7a3e9a2d00
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
+
+PODFILE CHECKSUM: 881d88aa0a84438ab69137b27a6bca89b2726afe
+
+COCOAPODS: 1.1.1
